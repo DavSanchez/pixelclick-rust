@@ -47,7 +47,7 @@
   "workspaceFolder": "/home/esp/brushknight_board_embassy_rs",
   
   // Expose serial port for flashing!
-  "runArgs": [
-    "--device=/dev/tty.usbmodem101"
-  ]
+  // "runArgs": [
+  //   "--device=/dev/tty.usbmodem101"
+  // ]
 }
