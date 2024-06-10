@@ -50,6 +50,8 @@
             with inputs'.fenix.packages;
             combine [
               complete.toolchain
+
+              # Target for ESP32C3 (not brushknight's board!)
               targets.riscv32imc-unknown-none-elf.latest.rust-std
             ];
 
@@ -184,7 +186,11 @@
             # MY_CUSTOM_DEVELOPMENT_VAR = "something else";
 
             # Extra inputs can be added here; cargo and rustc are provided by default.
-            packages = with pkgs; [ espup ];
+            packages = with pkgs; [ 
+              # Load binary into the board
+              probe-rs
+              # espflash
+             ];
           };
 
           packages =
