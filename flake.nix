@@ -186,11 +186,23 @@
             # MY_CUSTOM_DEVELOPMENT_VAR = "something else";
 
             # Extra inputs can be added here; cargo and rustc are provided by default.
-            packages = with pkgs; [ 
+            packages = with pkgs; [
               # Load binary into the board
               probe-rs
               # espflash
-             ];
+            ];
+          };
+
+          devShells.esp32s3 = pkgs.mkShell {
+            name = "esp32s3";
+
+            shellHook = ''
+              ${config.pre-commit.installationScript}
+              echo 1>&2 "Welcome to the ESP32S3 with Rust development shell!"
+            '';
+
+            # packages = [];
+            # inputsFrom = [];
           };
 
           packages =
