@@ -1,49 +1,42 @@
+//! Blinks an LED
+//!
+//! This assumes that a LED is connected to the pin assigned to `led`. (GPIO0)
+
+//% CHIPS: esp32 esp32c2 esp32c3 esp32c6 esp32h2 esp32s2 esp32s3
+
 #![no_std]
 #![no_main]
 
 use esp_backtrace as _;
 use esp_hal::{
-    clock::ClockControl, delay::Delay, peripherals::Peripherals, prelude::*, system::SystemControl,
+    clock::ClockControl,
+    delay::Delay,
+    gpio::{Io, Level, Output},
+    peripherals::Peripherals,
+    prelude::*,
+    system::SystemControl,
 };
-
-extern crate alloc;
-use core::mem::MaybeUninit;
-
-#[global_allocator]
-static ALLOCATOR: esp_alloc::EspHeap = esp_alloc::EspHeap::empty();
-
-fn init_heap() {
-    const HEAP_SIZE: usize = 32 * 1024;
-    static mut HEAP: MaybeUninit<[u8; HEAP_SIZE]> = MaybeUninit::uninit();
-
-    unsafe {
-        ALLOCATOR.init(HEAP.as_mut_ptr() as *mut u8, HEAP_SIZE);
-    }
-}
 
 #[entry]
 fn main() -> ! {
     let peripherals = Peripherals::take();
     let system = SystemControl::new(peripherals.SYSTEM);
+    let clocks = ClockControl::boot_defaults(system.clock_control).freeze();
 
-    let clocks = ClockControl::max(system.clock_control).freeze();
+    // Set GPIO0 as an output, and set its state high initially.
+    let io = Io::new(peripherals.GPIO, peripherals.IO_MUX);
+    let mut led_red = Output::new(io.pins.gpio8, Level::High);
+    let mut led_blue = Output::new(io.pins.gpio9, Level::High);
+
     let delay = Delay::new(&clocks);
-    init_heap();
-
-    esp_println::logger::init_logger_from_env();
-
-    let timer = esp_hal::timer::timg::TimerGroup::new(peripherals.TIMG1, &clocks, None).timer0;
-    let _init = esp_wifi::initialize(
-        esp_wifi::EspWifiInitFor::Wifi,
-        timer,
-        esp_hal::rng::Rng::new(peripherals.RNG),
-        peripherals.RADIO_CLK,
-        &clocks,
-    )
-    .unwrap();
 
     loop {
-        log::info!("Hello world!");
-        delay.delay(500.millis());
+        led_red.toggle();
+        led_blue.toggle();
+        delay.delay_millis(500);
+        led_red.toggle();
+        led_blue.toggle();
+        // or using `fugit` duration
+        delay.delay(2.secs());
     }
 }
