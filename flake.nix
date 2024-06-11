@@ -35,7 +35,10 @@
           ...
         }:
         let
-          rustToolchain = inputs'.fenix.packages.complete.toolchain;
+          rustToolchainManifest = pkgs.lib.recursiveUpdate (builtins.fromJSON (builtins.readFile "${inputs.fenix}/data/stable.json")) (
+            builtins.fromJSON (builtins.readFile ./esp-rs.json)
+          );
+          rustToolchain = (inputs'.fenix.packages.fromManifest rustToolchainManifest).toolchain;
         in
         {
 
@@ -82,10 +85,10 @@
 
               echo 1>&2 "Welcome to the ESP32S3 with Rust development shell!"
 
-              echo 1>&2 "Setting up Rust toolchain for ESP32..."
-              ${pkgs.espup}/bin/espup install --targets esp32s3 --log-level debug --export-file ./export-esp.sh
+              # echo 1>&2 "Setting up Rust toolchain for ESP32..."
+              # ${pkgs.espup}/bin/espup install --targets esp32s3 --log-level debug --export-file ./export-esp.sh
 
-              source ./export-esp.sh
+              # source ./export-esp.sh
             '';
 
             packages =
@@ -93,8 +96,9 @@
                 rustToolchain # Needed?
               ]
               ++ (with pkgs; [
-                espup # For updating manually?
+                # espup # For updating manually?
                 # To load binary into the board
+                # run with `espflash flash --monitor`
                 espflash
                 probe-rs
               ]);

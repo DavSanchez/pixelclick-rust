@@ -1,0 +1,47 @@
+{
+  "pkg": {
+    "rust": {
+      "target": {
+        "aarch64-apple-darwin-xtensa": {
+          "available": true,
+          "url": "https://github.com/esp-rs/rust-build/releases/download/v1.77.0.0/rust-1.77.0.0-aarch64-apple-darwin.tar.xz",
+          "hash": "3be74c31ee8dc4f1d49e2f2888228de374138eaeca1876d0c1b1a61df6023b3b"
+        },
+        "aarch64-unknown-linux-gnu": {
+          "available": true,
+          "url": "https://github.com/esp-rs/rust-build/releases/download/v1.77.0.0/rust-1.77.0.0-aarch64-unknown-linux-gnu.tar.xz",
+          "hash": "FAKE"
+        },
+        "x86_64-apple-darwin": {
+          "available": true,
+          "url": "https://github.com/esp-rs/rust-build/releases/download/v1.77.0.0/rust-1.77.0.0-x86_64-apple-darwin.tar.xz",
+          "hash": "FAKE"
+        },
+        "x86_64-pc-windows-gnu": {
+          "available": true,
+          "url": "https://github.com/esp-rs/rust-build/releases/download/v1.77.0.0/rust-1.77.0.0-x86_64-pc-windows-gnu.zip",
+          "hash": "FAKE"
+        },
+        "x86_64-pc-windows-msvc": {
+          "available": true,
+          "url": "https://github.com/esp-rs/rust-build/releases/download/v1.77.0.0/rust-1.77.0.0-x86_64-pc-windows-msvc.zip",
+          "hash": "FAKE"
+        },
+        "x86_64-unknown-linux-gnu": {
+          "available": true,
+          "url": "https://github.com/esp-rs/rust-build/releases/download/v1.77.0.0/rust-1.77.0.0-x86_64-unknown-linux-gnu.tar.xz",
+          "hash": "1307747915e8bd925f4d5396ab2ae3d8d9c7fad564afbc358c081683d0f22e87"
+        }
+      }
+    },
+    "rust-src": {
+      "target": {
+        "*": {
+          "available": true,
+          "url": "https://github.com/esp-rs/rust-build/releases/download/v1.77.0.0/rust-src-1.77.0.0.tar.xz",
+          "hash": "sha256-ISiSN3A+JOAixvPkkFzpNu7kuP1EzN9xBSeahDNIXSU="
+        }
+      }
+    }
+  }
+}

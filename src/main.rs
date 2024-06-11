@@ -25,16 +25,16 @@ fn main() -> ! {
 
     // Set GPIO0 as an output, and set its state high initially.
     let io = Io::new(peripherals.GPIO, peripherals.IO_MUX);
-    let mut led_red = Output::new(io.pins.gpio8, Level::High);
+    // let mut led_red = Output::new(io.pins.gpio8, Level::High);
     let mut led_blue = Output::new(io.pins.gpio9, Level::High);
 
     let delay = Delay::new(&clocks);
 
     loop {
-        led_red.toggle();
+        // led_red.toggle();
         led_blue.toggle();
         delay.delay_millis(500);
-        led_red.toggle();
+        // led_red.toggle();
         led_blue.toggle();
         // or using `fugit` duration
         delay.delay(2.secs());
