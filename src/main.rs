@@ -1,36 +1,50 @@
-#![cfg(feature = "smart-leds-trait")]
-use esp_idf_hal::peripherals::Peripherals;
-use smart_leds_trait::{SmartLedsWrite, White};
-use std::thread::sleep;
-use std::time::Duration;
-use ws2812_esp32_rmt_driver::driver::color::LedPixelColorGrbw32;
-use ws2812_esp32_rmt_driver::{LedPixelEsp32Rmt, RGBW8};
+//! Blinks an LED
+//!
+//! This assumes that a LED is connected to the pin assigned to `led`. (GPIO0)
 
+//% CHIPS: esp32 esp32c2 esp32c3 esp32c6 esp32h2 esp32s2 esp32s3
+
+#![no_std]
+#![no_main]
+
+use esp_backtrace as _;
+use esp_hal::{
+    clock::ClockControl,
+    delay::Delay,
+    gpio::{Io, Level, Output},
+    peripherals::Peripherals,
+    prelude::*,
+    rmt::Rmt,
+    system::SystemControl,
+};
+use esp_hal_smartled::{smartLedBuffer, SmartLedsAdapter};
+
+#[entry]
 fn main() -> ! {
-    // Temporary. Will disappear once ESP-IDF 4.4 is released, but for now it is necessary to call this function once,
-    // or else some patches to the runtime implemented by esp-idf-sys might not link properly.
-    esp_idf_sys::link_patches();
+    let peripherals = Peripherals::take();
+    let system = SystemControl::new(peripherals.SYSTEM);
+    let clocks = ClockControl::boot_defaults(system.clock_control).freeze();
 
-    let peripherals = Peripherals::take().unwrap();
-    let led_pin = peripherals.pins.gpio5;
-    let channel = peripherals.rmt.channel0;
-    let mut ws2812 = LedPixelEsp32Rmt::<RGBW8, LedPixelColorGrbw32>::new(channel, led_pin).unwrap();
+    // Set GPIO0 as an output, and set its state high initially.
+    let io = Io::new(peripherals.GPIO, peripherals.IO_MUX);
+
+    let rmt = Rmt::new(peripherals.RMT, 80.MHz(), &clocks, None).unwrap();
+    let rmt_buffer = smartLedBuffer!(1);
+    let mut a_led = SmartLedsAdapter::new(rmt.channel0, io.pins.gpio5, rmt_buffer, &clocks);
+
+    let mut led_red = Output::new(io.pins.gpio8, Level::High);
+    let mut led_blue = Output::new(io.pins.gpio9, Level::Low);
+
+    let delay = Delay::new(&clocks);
 
     loop {
-        let pixels = std::iter::repeat(RGBW8::from((6, 0, 0, White(0)))).take(25);
-        ws2812.write(pixels).unwrap();
-        sleep(Duration::from_millis(1000));
+        led_red.toggle();
+        led_blue.toggle();
+        delay.delay_millis(500);
+        led_red.toggle();
+        led_blue.toggle();
 
-        let pixels = std::iter::repeat(RGBW8::from((0, 6, 0, White(0)))).take(25);
-        ws2812.write(pixels).unwrap();
-        sleep(Duration::from_millis(1000));
-
-        let pixels = std::iter::repeat(RGBW8::from((0, 0, 6, White(0)))).take(25);
-        ws2812.write(pixels).unwrap();
-        sleep(Duration::from_millis(1000));
-
-        let pixels = std::iter::repeat(RGBW8::from((0, 0, 0, White(6)))).take(25);
-        ws2812.write(pixels).unwrap();
-        sleep(Duration::from_millis(1000));
+        // or using `fugit` duration
+        delay.delay(2.secs());
     }
 }
