@@ -7,14 +7,11 @@
 #![no_std]
 #![no_main]
 
-use core::ops::DerefMut;
-
 use embassy_executor::Spawner;
 use embassy_time::{Duration, Timer};
 use esp_backtrace as _;
 use esp_hal::{
     clock::ClockControl,
-    delay::Delay,
     gpio::{Gpio8, Gpio9, Io, Level, Output},
     peripherals::Peripherals,
     prelude::*,
@@ -23,22 +20,19 @@ use esp_hal::{
     timer::timg::TimerGroup,
 };
 use esp_hal_smartled::{smartLedBuffer, SmartLedsAdapter};
-use esp_println::logger::init_logger_from_env;
-use front_leds::{blue::BlueLed, red::RedLed};
+use esp_println::logger::init_logger;
 use log::info;
 use smart_leds::{
-    brightness,
-    colors::WHITE,
-    gamma,
+    brightness, gamma,
     hsv::{hsv2rgb, Hsv},
-    SmartLedsWrite, RGB,
+    SmartLedsWrite,
 };
 
 mod front_leds;
 // mod pixel_click; // A sort of framework for the board, not yet ready
 
 #[embassy_executor::task]
-async fn run(mut red: RedLed, mut blue: BlueLed) {
+async fn run(mut red: Output<'static, Gpio8>, mut blue: Output<'static, Gpio9>) {
     loop {
         info!("Playing with the leds concurrently!");
         red.toggle();
@@ -49,7 +43,7 @@ async fn run(mut red: RedLed, mut blue: BlueLed) {
 
 #[main]
 async fn main(spawner: Spawner) -> ! {
-    init_logger_from_env();
+    init_logger(log::LevelFilter::Info);
     info!("Init!");
 
     // Initialize peripherals, clocks, GPIO, etc
@@ -62,8 +56,8 @@ async fn main(spawner: Spawner) -> ! {
     esp_hal_embassy::init(&clocks, timg0);
 
     // Init the front board LEDs
-    let front_red = RedLed::new(io.pins.gpio8, Level::High);
-    let front_blue = BlueLed::new(io.pins.gpio9, Level::Low);
+    let front_red = Output::new(io.pins.gpio8, Level::High);
+    let front_blue = Output::new(io.pins.gpio9, Level::Low);
     spawner.spawn(run(front_red, front_blue)).ok();
 
     // For the LED panel, initialize the RMT (Remote Control Transceiver)
@@ -79,66 +73,15 @@ async fn main(spawner: Spawner) -> ! {
         sat: 255,
         val: 255,
     };
-    let mut data: [RGB<u8>; 36];
-
-    // Global delay
-    let delay = Delay::new(&clocks);
+    let mut data;
 
     loop {
-        // led_red.toggle();
-        // led_blue.toggle();
-
-        // delay.delay_millis(1000);
-
-        // led_red.toggle();
-        // led_blue.toggle();
-
-        // // or using `fugit` duration
-        // delay.delay(1.secs());
-
         // Iterate over the rainbow!
         for hue in 0..=255 {
             color.hue = hue;
             // Convert from the HSV color space (where we can easily transition from one
             // color to the other) to the RGB color space that we can then send to the LED
-            data = [
-                hsv2rgb(color),
-                hsv2rgb(color),
-                hsv2rgb(color),
-                hsv2rgb(color),
-                hsv2rgb(color),
-                hsv2rgb(color),
-                hsv2rgb(color),
-                hsv2rgb(color),
-                hsv2rgb(color),
-                hsv2rgb(color),
-                hsv2rgb(color),
-                hsv2rgb(color),
-                hsv2rgb(color),
-                hsv2rgb(color),
-                hsv2rgb(color),
-                hsv2rgb(color),
-                hsv2rgb(color),
-                hsv2rgb(color),
-                hsv2rgb(color),
-                hsv2rgb(color),
-                hsv2rgb(color),
-                hsv2rgb(color),
-                hsv2rgb(color),
-                hsv2rgb(color),
-                hsv2rgb(color),
-                hsv2rgb(color),
-                hsv2rgb(color),
-                hsv2rgb(color),
-                hsv2rgb(color),
-                hsv2rgb(color),
-                hsv2rgb(color),
-                hsv2rgb(color),
-                hsv2rgb(color),
-                hsv2rgb(color),
-                hsv2rgb(color),
-                hsv2rgb(color),
-            ];
+            data = [hsv2rgb(color); 36];
             // When sending to the LED, we do a gamma correction first (see smart_leds
             // documentation for details) and then limit the brightness to 10 out of 255 so
             // that the output it's not too bright.
@@ -146,15 +89,7 @@ async fn main(spawner: Spawner) -> ! {
                 .write(brightness(gamma(data.iter().cloned()), 15))
                 .unwrap();
 
-            // front_red.toggle();
-            // front_blue.toggle();
             Timer::after(Duration::from_millis(15)).await;
-            // delay.delay_millis(15);
-            // or with fugit
-            // delay.delay(20.millis());
         }
-        // a_led
-        //     .write(brightness(data.iter().map(|_| WHITE), 10))
-        //     .unwrap();
     }
 }
