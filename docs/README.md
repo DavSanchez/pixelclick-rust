@@ -11,6 +11,13 @@ In this `master` branch, you can see the following areas covered:
 
 Come on! Go to [`src/main.rs`!](../src/main.rs)
 
+## Pinout
+
+This is the device pinout, in particular check for the `GPIO` labels inside the yellow square which represents the SoC and the labels associated with each of them. This show us what device is connected to each pin, so it's a matter of saying if we want to put a HIGH or a LOW  on each pin to achieve the effect we want!
+
+![](./IMG_7754.png)
+
+
 ## Develop with Dev Containers
 This repository offers Dev Containers support, for developing quickly with VS Code.
 
