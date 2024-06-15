@@ -9,6 +9,8 @@ In this `master` branch, you can see the following areas covered:
 - [x] Async programming with `embassy-rs`.
 - [ ] Network functionality.
 
+Come on! Go to [`src/main.rs`!](../src/main.rs)
+
 ## Develop with Dev Containers
 This repository offers Dev Containers support, for developing quickly with VS Code.
 
