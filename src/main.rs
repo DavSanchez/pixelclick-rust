@@ -78,10 +78,10 @@ async fn main(spawner: Spawner) -> ! {
     // Initialize embassy
     esp_hal_embassy::init(&clocks, timg0);
 
-    // Init the front board LEDs as Outputs and with their initial level
+    // Init the back board LEDs as Outputs and with their initial level
     // RED led is in GPIO 8 (see the pinout diagram). We instruct it to start active (HIGH).
     let front_red = Output::new(io.pins.gpio8, Level::High);
-    // RED led is in GPIO 9 (see the pinout diagram). We instruct it to start inactive (LOW).
+    // BLUE led is in GPIO 9 (see the pinout diagram). We instruct it to start inactive (LOW).
     let front_blue = Output::new(io.pins.gpio9, Level::Low);
 
     // For the LED panel, initialize the RMT (Remote Control Transceiver)
