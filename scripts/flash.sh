@@ -18,4 +18,4 @@ case "$1" in
     ;;
 esac
 
-web-flash --chip esp32s3 target/xtensa-esp32s3-none-elf/${BUILD_MODE}/brushknight_board_embassy_rs
+web-flash --chip esp32s3 target/xtensa-esp32s3-none-elf/${BUILD_MODE}/pixelclick-rust
