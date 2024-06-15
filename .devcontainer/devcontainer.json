@@ -1,5 +1,5 @@
 {
-  "name": "brushknight_board_embassy_rs",
+  "name": "pixelclick-rust",
   // Select between image and build properties to pull or build the image.
   // "image": "docker.io/espressif/idf-rust:esp32s3_latest",
   "build": {
@@ -43,8 +43,8 @@
     8000,
     3333
   ],
-  "workspaceMount": "source=${localWorkspaceFolder},target=/home/esp/brushknight_board_embassy_rs,type=bind,consistency=cached",
-  "workspaceFolder": "/home/esp/brushknight_board_embassy_rs",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/home/esp/pixelclick-rust,type=bind,consistency=cached",
+  "workspaceFolder": "/home/esp/pixelclick-rust",
   
   // Expose serial port for flashing!
   // "runArgs": [

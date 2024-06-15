@@ -1,5 +1,5 @@
 [package]
-name = "brushknight-board-embassy-rs"
+name = "pixelclick-rust"
 version = "0.1.0"
 authors = ["David Sánchez <davidslt+git@pm.me>"]
 edition = "2021"

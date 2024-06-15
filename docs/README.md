@@ -1,24 +1,22 @@
-# brushknight_board_embassy_rs
+# PixelClick Rust
 
-## Dev Containers
-This repository offers Dev Containers supports for:
--  [VS Code Dev Containers](https://code.visualstudio.com/docs/remote/containers#_quick-start-open-an-existing-folder-in-a-container)
--  [GitHub Codespaces](https://docs.github.com/en/codespaces/developing-in-codespaces/creating-a-codespace)
-> **Note**
->
-> In [order to use GitHub Codespaces](https://github.com/features/codespaces#faq)
-> the project needs to be published in a GitHub repository and the user needs
-> to be part of the Codespaces beta or have the project under an organization.
+Hey! This is a playground for me to experiment with @brushknight's awesome PixelClick.
 
-If using VS Code or GitHub Codespaces, you can pull the image instead of building it
-from the Dockerfile by selecting the `image` property instead of `build` in
-`.devcontainer/devcontainer.json`. Further customization of the Dev Container can
-be achieved, see [`.devcontainer.json` reference](https://code.visualstudio.com/docs/remote/devcontainerjson-reference).
+In this `master` branch, you can see the following areas covered:
 
-When using Dev Containers, some tooling to facilitate building, flashing and
-simulating in Wokwi is also added.
-### Build
-- Terminal approach:
+- [x] Playing with the back LEDs (red and blue).
+- [x] Playing with the front addressable LED panel.
+- [x] Async programming with `embassy-rs`.
+- [ ] Network functionality.
+
+## Develop with Dev Containers
+This repository offers Dev Containers support, for developing quickly with VS Code.
+
+> ### Why do we need this?
+> The ESP32-S3 board uses an architecture that is not available as a target with the stock Rust toolchains (`xtensa-esp32s3-none-elf`). It requires a fork of the Rust compiler and LLVM to have this target available. This Dev Container sets up all these dependencies for you and configures Cargo to target this by default (see [`.cargo/config.toml`](../.cargo/config.toml)).
+
+### Build the project
+- Terminal approach (useful to quickly edit and add environment variables, just don't commit them if they're sensitive!):
 
     ```
     scripts/build.sh  [debug | release]
@@ -39,10 +37,21 @@ simulating in Wokwi is also added.
 
 ### Flash
 
-> **Note**
->
-> When using GitHub Codespaces, we need to make the ports
-> public, [see instructions](https://docs.github.com/en/codespaces/developing-in-codespaces/forwarding-ports-in-your-codespace#sharing-a-port).
+If you, like me, use Colima for containers in a Mac and had issues exposing the serial device to the container, you can always develop and build the binary from the container and flash the board from outside. Make sure you install either `espflash` or `probe-rs`.
+
+Once you have built your project with the script or `cargo build` or whatever, connect the device to the computer and, from the project's root directory use either:
+
+```console
+$  espflash flash --monitor target/xtensa-esp32s3-none-elf/release/<BINARY_NAME> 
+```
+
+or
+
+```console
+$ probe-rs run --chip esp32s3 target/xtensa-esp32s3-none-elf/release/<BINARY_NAME>
+```
+
+If you don't have this issue, you can just do the following:
 
 - Terminal approach:
   - Using `flash.sh` script:
@@ -56,28 +65,3 @@ simulating in Wokwi is also added.
     - From the [Command Palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette) (`Ctrl-Shift-P` or `Cmd-Shift-P`) run the `Tasks: Run Task` command and
     select `Build & Flash`.
     - From UI: Press `Build & Flash` on the left side of the Status Bar.
-- Any alternative flashing method from host machine.
-
-
-### Wokwi Simulation
-
-#### VS Code Dev Containers and GitHub Codespaces
-
-The Dev Container includes the Wokwi Vs Code installed, hence you can simulate your built projects doing the following:
-1. Press `F1`
-2. Run `Wokwi: Start Simulator`
-
-> **Note**
->
->  We assume that the project is built in `debug` mode, if you want to simulate projects in release, please update the `elf` and  `firmware` proprieties in `wokwi.toml`.
-
-For more information and details on how to use the Wokwi extension, see [Getting Started] and [Debugging your code] Chapter of the Wokwi documentation.
-
-[Getting Started]: https://docs.wokwi.com/vscode/getting-started
-[Debugging your code]: https://docs.wokwi.com/vscode/debugging
-
-> **Warning**
->
->  ESP32-C2 is not, yet, not supported in Wokwi.
-
-
