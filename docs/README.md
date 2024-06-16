@@ -7,6 +7,7 @@ In this `master` branch, you can see the following areas covered:
 - [x] Playing with the back LEDs (red and blue).
 - [x] Playing with the front addressable LED panel.
 - [x] Async programming with `embassy-rs`.
+- [x] Checking if the buttons are pressed (no interrupts, concurrent tasks with `embassy-rs`).
 - [ ] Network functionality.
 
 Come on! Go to [`src/main.rs`!](../src/main.rs)
