@@ -14,7 +14,7 @@ Come on! Go to [`src/main.rs`!](../src/main.rs)
 
 ## Pinout
 
-This is the device pinout, in particular check for the `GPIO` labels inside the yellow square which represents the SoC and the labels associated with each of them. This show us what device is connected to each pin, so it's a matter of saying if we want to put a HIGH or a LOW  on each pin to achieve the effect we want!
+This is the device pinout, in particular check for the `GPIO` labels inside the yellow square which represents the SoC and the labels associated with each of them. This show us what device is connected to each pin, so it's a matter of, taking the outputs as an example, saying if we want to put a HIGH or a LOW on each pin to achieve the effect we want! For the inputs, we would need to check the value somehow and react to it, either via interruptions or some other mean.
 
 ![](./IMG_7754.png)
 
